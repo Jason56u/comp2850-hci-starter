@@ -2,8 +2,6 @@ plugins {
     application
     kotlin("jvm") version "2.2.21"
     id("io.ktor.plugin") version "2.3.11"
-    id("org.jlleitschuh.gradle.ktlint") version "13.1.0"
-    id("io.gitlab.arturbosch.detekt") version "1.23.8"
 }
 
 group = "uk.ac.leeds.comp2850"
@@ -25,11 +23,6 @@ dependencies {
     implementation("io.ktor:ktor-server-sessions-jvm:$ktorVersion")
     implementation("io.ktor:ktor-server-status-pages-jvm:$ktorVersion")
     implementation("io.ktor:ktor-server-call-logging-jvm:$ktorVersion")
-    
-    implementation("io.ktor:ktor-server-core:2.3.12")
-    implementation("io.ktor:ktor-server-netty:2.3.12")
-    implementation("io.pebbletemplates:pebble:3.2.2")
-    implementation("ch.qos.logback:logback-classic:1.5.6")
 
     // Pebble templating
     implementation("io.pebbletemplates:pebble:$pebbleVersion")
@@ -44,7 +37,9 @@ dependencies {
     testImplementation(kotlin("test"))
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktorVersion")
     testImplementation("io.ktor:ktor-client-content-negotiation-jvm:$ktorVersion")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit5:2.2.21")
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit5:2.2.21") {
+        exclude(group = "org.jetbrains.kotlin", module = "kotlin-test-junit")
+    }
 }
 
 application {
@@ -62,18 +57,4 @@ tasks.withType<JavaExec> {
 
 kotlin {
     jvmToolchain(21)
-}
-
-// Code quality: Detekt (static analysis)
-// Reports violations as warnings, doesn't fail build
-detekt {
-    config.setFrom(files("detekt.yml"))
-    buildUponDefaultConfig = true
-    ignoreFailures = true // Report but don't fail build
-}
-
-// Code quality: ktlint (code style)
-// Reports violations as warnings, doesn't fail build
-configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
-    ignoreFailures.set(true) // Report but don't fail build
 }
